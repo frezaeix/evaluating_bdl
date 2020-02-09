@@ -16,13 +16,14 @@ from models.model import get_model
 
 from utils.utils import label_img_2_color, get_confusion_matrix
 
-model_id = "ensembling_syn"
-#model_id = "ensembling"
-model_is = [0, 1, 2, 3, 4, 5, 6, 7]
+# model_id = "ensembling_syn"
+model_id = "ensembling"
+# model_is = [0, 1, 2, 3, 4, 5, 6, 7]
+model_is = [0]
 print (model_is)
 
-data_dir = "/home/data/cityscapes"
-data_list = "/home/evaluating_bdl/segmentation/lists/cityscapes/val.lst"
+data_dir = "../data/cityscapes"
+data_list = "lists/cityscapes/val.lst"
 batch_size = 2
 num_classes = 19
 max_entropy = np.log(num_classes)
@@ -30,13 +31,13 @@ max_entropy = np.log(num_classes)
 eval_dataset = DatasetCityscapesEval(root=data_dir, list_path=data_list)
 eval_loader = data.DataLoader(eval_dataset, batch_size=batch_size, shuffle=False, pin_memory=True)
 
-output_path = "/home/evaluating_bdl/segmentation/training_logs/%s_%s_eval" % (model_id, str(model_is))
+output_path = "training_logs/%s_%s_eval" % (model_id, str(model_is))
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
 models = []
 for i in model_is:
-    restore_from = "/home/evaluating_bdl/segmentation/trained_models/%s_%d/checkpoint_40000.pth" % (model_id, i)
+    restore_from = "trained_models/%s_%d/checkpoint_40000.pth" % (model_id, i)
     deeplab = get_model(num_classes=num_classes)
     deeplab.load_state_dict(torch.load(restore_from))
     model = nn.DataParallel(deeplab)

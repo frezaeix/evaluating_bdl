@@ -16,11 +16,11 @@ from models.model_mcdropout import get_model
 
 from utils.utils import label_img_2_color, get_confusion_matrix
 
-model_id = "mcdropout_syn_0"
+model_id = "mcdropout_0"
 M = 8
 
-data_dir = "/home/data/cityscapes"
-data_list = "/home/evaluating_bdl/segmentation/lists/cityscapes/val.lst"
+data_dir = "../data/cityscapes"
+data_list = "lists/cityscapes/val.lst"
 batch_size = 2
 num_classes = 19
 max_entropy = np.log(num_classes)
@@ -28,11 +28,11 @@ max_entropy = np.log(num_classes)
 eval_dataset = DatasetCityscapesEval(root=data_dir, list_path=data_list)
 eval_loader = data.DataLoader(eval_dataset, batch_size=batch_size, shuffle=False, pin_memory=True)
 
-output_path = "/home/evaluating_bdl/segmentation/training_logs/%s_M%d_eval" % (model_id, M)
+output_path = "training_logs/%s_M%d_eval" % (model_id, M)
 if not os.path.exists(output_path):
     os.makedirs(output_path)
 
-restore_from = "/home/evaluating_bdl/segmentation/trained_models/%s/checkpoint_60000.pth" % model_id
+restore_from = "trained_models/%s/checkpoint_60000.pth" % model_id
 deeplab = get_model(num_classes=num_classes)
 deeplab.load_state_dict(torch.load(restore_from))
 model = nn.DataParallel(deeplab)
